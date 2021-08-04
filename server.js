@@ -41,10 +41,10 @@ const firstQuestion = () => {
         }
 
     ]).then((answer) => {
-        switch (answer.optionsList) {
+        switch (answer.optionsList) {            // use switch to evaluate if choice from our array matches 
             case "View all Departments":
-                viewDepartments();
-                break;
+                viewDepartments();              // method executed if user select matches case value
+                break;                          //use break to end case clause 
 
             case "View all Roles":
                 viewRoles();
