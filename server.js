@@ -13,7 +13,7 @@ const PORT = process.env.PORT || 3001;
 db.query = util.promisify(db.query);
 
 // use figlet to display bubble text welcome
-figlet("Your Employee Tracker!", (err, data) => {
+figlet("Your Employee Tracker!", (data, err) => {
     if (err) {
         throw err;
     } else {
@@ -26,11 +26,12 @@ db.connect(err => {
         throw err;
     } else {
         console.log("Welcome to your Employee Tracker!");
+        // firstQuestion();
     }
-});
+})
 
 // function to begin inquirer prompt questions 
-const firstQuestion = () => {
+const firstQuestion = async () => {
     return inquirer.prompt([
         {
             name: "optionsList",
@@ -41,10 +42,10 @@ const firstQuestion = () => {
         }
 
     ]).then((answer) => {
-        switch (answer.optionsList) {            // use switch to evaluate if choice from our array matches 
+        switch (answer.optionsList) {
             case "View all Departments":
-                viewDepartments();              // method executed if user select matches case value
-                break;                          //use break to end case clause 
+                viewDepartments();
+                break;
 
             case "View all Roles":
                 viewRoles();
@@ -83,21 +84,5 @@ const firstQuestion = () => {
 };
 
 
-
 firstQuestion();
 
-
-
-
-
-
-
-
-// start server after db connection
-// db.connect(err => {
-//     if (err) throw err;
-//     console.log("Database connected");
-//     app.listen(PORT, () => {
-//         console.log(`Server running on port ${PORT}`);
-//     });
-// });
