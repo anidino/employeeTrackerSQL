@@ -1,13 +1,19 @@
-const mysql = require('mysql2');
+const mysql = require("mysql2");
 
-// connect to db 
+
+// Connect to database
 const connection = mysql.createConnection({
-    host: "localhost",
-    user: "root",
-    password: "password",
-    database: "employee_db"
-    // Promise: bluebird
+    host: 'localhost',
+    // Your MySQL username,
+    user: 'root',
+    // Your MySQL password
+    password: 'password',
+    port: 3306,
+    database: 'employee_db'
 });
+
+
+
 
 
 

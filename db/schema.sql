@@ -15,7 +15,7 @@ CREATE TABLE e_role (
     salary DECIMAL NOT NULL,
     dept_id INTEGER, 
     CONSTRAINT fk_dept FOREIGN KEY (dept_id) REFERENCES department(id) 
-    -- FOREIGN KEY (dept_id),
+   
     -- REFERENCES department(id),
     -- ON DELETE SET NULL,
       
@@ -26,15 +26,14 @@ CREATE TABLE employee (
     first_name VARCHAR(30) NOT NULL,
     last_name VARCHAR(30) NOT NULL,
     role_id INTEGER,
-    manager_id INTEGER UNIQUE,
+    manager_id INTEGER,
     CONSTRAINT fk_role FOREIGN KEY (role_id) REFERENCES e_role(id) ON DELETE SET NULL
-    -- CONSTRAINT fk_manager_id FOREIGN KEY (manager_id) REFERENCES employee(role_id) ON DELETE SET NULL
-    -- FOREIGN KEY role_id,
-    -- REFERENCES e_role(id),
-    
 );
 
 
+-- SELECT employee.id, employee.first_name, employee.last_name, employee_role.title, employee_role.salary FROM employeetracker_db.employee LEFT JOIN employee_role on employee_role.id = employee.role_id
 
 
-
+-- CONSTRAINT fk_manager_id FOREIGN KEY (manager_id) REFERENCES employee(role_id) ON DELETE SET NULL
+    -- FOREIGN KEY role_id,
+    -- REFERENCES e_role(id),
