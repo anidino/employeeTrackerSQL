@@ -199,7 +199,7 @@ async function addRole() {
 
 async function addEmployee() {
     let employeeRoleChoices = await connection.promise().query(`SELECT * FROM e_role `)
-    console.log(employeeRoleChoices[0])
+    // console.log(employeeRoleChoices[0])
     let userEmployeeArray = [];
     for (let i = 0; i < employeeRoleChoices[0].length; i++) {
         userEmployeeArray.push(employeeRoleChoices[0][i].title)
@@ -239,102 +239,15 @@ async function addEmployee() {
     ]);
     const employeeRoleId = await connection.promise().query('SELECT id FROM e_role WHERE role_id = ?', newEmployee.e_role);
     console.log(employeeRoleId[0][0].id);
-    let employeeRoleResponse = connection.query(`INSERT INTO employee SET `, {
-        role_id: employeeRoleId[0][0].id,
+    connection.query(`INSERT INTO employee SET ? `, {
+        role_id: employeeRoleId[0].id,
         first_name: newEmployee.first_name,
         last_name: newEmployee.last_name,
-        manager_id: newEmployee.managerId
+        // manager_id: newEmployee.managerId
     })
-    console.log(employeeRoleResponse)
+    console.log(`${newEmployee.first_name} +${newEmployee.last_name} was successfully added to Employees!`)
+    firstQuestion();
 
 };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
