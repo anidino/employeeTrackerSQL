@@ -8,6 +8,7 @@ const figlet = require("figlet");
 const db = require("./db/connection");
 // const util = require("util");
 const connection = require("./db/connection");
+const { removeAllListeners } = require("./db/connection");
 
 
 // use figlet to display bubble text welcome in terminal
@@ -57,9 +58,11 @@ const firstQuestion = async () => {
 
             case "Add a Department":
                 addDepartment();
+                break;
 
             case "Add a Role":
                 addRole();
+                break;
 
             case "Add an Employee":
                 addEmployee();
@@ -111,7 +114,7 @@ function viewRoles() {
 
 // user can view employees 
 function viewEmployees() {
-    db.query(`SELECT * FROM e_role`, (err, rows) => {
+    db.query(`SELECT * FROM employee`, (err, rows) => {
         if (err) {
             throw err;
         } else {
@@ -132,8 +135,8 @@ function viewEmployees() {
 async function addDepartment() {
     let deptAnswer = await inquirer.prompt([
         {
-            name: deptName,
-            type: input,
+            name: "deptName",
+            type: "input",
             message: "Please enter the name of the new department."
         }
     ]);
@@ -141,8 +144,47 @@ async function addDepartment() {
     let response = connection.query(`INSERT INTO department SET ?`, {
         dept_name: deptAnswer.deptName
     });
-    console.log(response);
-    console.log(`${deptName} was successfully added to departments!`)
+
+    console.log(`${deptAnswer.deptName} was successfully added to departments!`)
+    firstQuestion();
+};
+
+async function addRole() {
+    let currentDept = await connection.promise().query(`SELECT * FROM department`)
+    console.log(currentDept[0]);
+    let deptArray = [];
+    for (let i = 0; i < currentDept[0].length; i++) {
+        deptArray.push(currentDept[0][i].deptName)
+        console.log(deptArray)
+
+
+    }
+    let newRole = await inquirer.prompt([
+        {
+            name: "title",
+            type: "input",
+            message: "Please enter the name of the new role"
+        },
+        {
+            name: "salary",
+            type: "input",
+            message: "Please enter the salary for this role"
+        },
+        {
+            name: "roleList",
+            type: "list",
+            choices: [currentDept[0].deptName]  // check out choices and inquirer package for how to get individual items from parent array 'currentDept'
+
+        }
+
+    ]);
+
+    let roleResponse = connection.query(`INSERT INTO e_role SET ?`, {
+        title: newRole.title,
+        salary: newRole.salary     // title on right is not part of /same as title on left 
+    });
+    // console.log("test", roleResponse);
+    console.log(`${newRole.title} was successfully added to Roles!`)
     firstQuestion();
 }
 
