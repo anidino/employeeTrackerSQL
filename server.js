@@ -19,7 +19,7 @@ figlet("Employee Tracker!", (err, data) => {
 
 });
 
-// WHY DOES THE CODE BREAK WHEN I TRY TO PUT THIS BLOCK IN CONNECTION.JS (MINUS THE FIRSTQUESTION FUNCTION THAT STAYS HERE) *********************
+// WOULD LIKE TO HAVE THIS IN CONNECTION.JS BUT CODE BREAKS WHEN REMOVED EVEN WHEN FIRSTQUESTION(); IS LEFT *********************
 connection.connect((err) => {
     if (err) {
         throw err
@@ -79,7 +79,7 @@ const firstQuestion = async () => {
 
     } catch (err) {
         console.log(err);
-        // firstQuestion();
+
     };
 }
 
@@ -141,7 +141,7 @@ async function addDepartment() {
         }
     ]);
 
-    let response = connection.query(`INSERT INTO department SET ?`, {
+    connection.query(`INSERT INTO department SET ?`, {
         dept_name: deptAnswer.deptName
     });
 
@@ -150,16 +150,19 @@ async function addDepartment() {
 };
 
 async function addRole() {
-    let currentDept = await connection.promise().query(`SELECT * FROM department`)
-    console.log(currentDept[0]);
+    let deptChoices = await connection.promise().query(`SELECT * FROM department`)
+    console.log("============")
+    console.log(deptChoices[0]);
+    console.log("============")
     let deptArray = [];
-    for (let i = 0; i < currentDept[0].length; i++) {
-        deptArray.push(currentDept[0][i].deptName)
+    for (let i = 0; i < deptChoices[0].length; i++) {   //deptChoices is massive parent array in console 
+        deptArray.push(deptChoices[0][i].dept_name)   //previously departArray.push(deptChoices[0][i].deptName)
         console.log(deptArray)
-
-
     }
-    let newRole = await inquirer.prompt([
+
+    console.log(" dept array " + JSON.stringify(deptArray))
+    // let department = connection.query(`SELECT * FROM department`)
+    let userRole = await inquirer.prompt([
         {
             name: "title",
             type: "input",
@@ -171,22 +174,35 @@ async function addRole() {
             message: "Please enter the salary for this role"
         },
         {
-            name: "roleList",
+            name: "department",
             type: "list",
-            choices: [currentDept[0].deptName]  // check out choices and inquirer package for how to get individual items from parent array 'currentDept'
+            choices: deptArray  // check out choices and inquirer package for how to get individual items from parent array 'deptChoices'
 
         }
 
     ]);
+    const deptId = await connection.promise().query('SELECT id FROM department WHERE dept_name = ?', userRole.department);
+    console.log(deptId[0]);
+    console.log(deptId[0][0].id);
 
     let roleResponse = connection.query(`INSERT INTO e_role SET ?`, {
-        title: newRole.title,
-        salary: newRole.salary     // title on right is not part of /same as title on left 
+        title: userRole.title,                                          // title on right is not part of /same as title on left 
+        salary: userRole.salary,
+        dept_id: deptId[0][0].id
+
     });
     // console.log("test", roleResponse);
-    console.log(`${newRole.title} was successfully added to Roles!`)
+    console.log(`${userRole.title} was successfully added to Roles!`)
+    console.log(roleResponse)
     firstQuestion();
-}
+};
+
+// async function addEmployee() {
+//     let employeeList = 
+
+
+// }
+
 
 
 
