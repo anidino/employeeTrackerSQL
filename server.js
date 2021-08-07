@@ -8,7 +8,7 @@ const figlet = require("figlet");
 const db = require("./db/connection");
 // const util = require("util");
 const connection = require("./db/connection");
-const { removeAllListeners } = require("./db/connection");
+
 
 
 // use figlet to display bubble text welcome in terminal
@@ -151,16 +151,16 @@ async function addDepartment() {
 
 async function addRole() {
     let deptChoices = await connection.promise().query(`SELECT * FROM department`)
-    console.log("============")
-    console.log(deptChoices[0]);
-    console.log("============")
+    // console.log("============")
+    // console.log(deptChoices[0]);
+    // console.log("============")
     let deptArray = [];
     for (let i = 0; i < deptChoices[0].length; i++) {   //deptChoices is massive parent array in console 
         deptArray.push(deptChoices[0][i].dept_name)   //previously departArray.push(deptChoices[0][i].deptName)
-        console.log(deptArray)
+        // console.log(deptArray)
     }
 
-    console.log(" dept array " + JSON.stringify(deptArray))
+    // console.log(" dept array " + JSON.stringify(deptArray))
     // let department = connection.query(`SELECT * FROM department`)
     let userRole = await inquirer.prompt([
         {
@@ -176,16 +176,16 @@ async function addRole() {
         {
             name: "department",
             type: "list",
-            choices: deptArray  // check out choices and inquirer package for how to get individual items from parent array 'deptChoices'
+            choices: deptArray  // user selects from array of depts 
 
         }
 
     ]);
     const deptId = await connection.promise().query('SELECT id FROM department WHERE dept_name = ?', userRole.department);
-    console.log(deptId[0]);
-    console.log(deptId[0][0].id);
+    // console.log(deptId[0]);
+    // console.log(deptId[0][0].id);
 
-    let roleResponse = connection.query(`INSERT INTO e_role SET ?`, {
+    connection.query(`INSERT INTO e_role SET ?`, {
         title: userRole.title,                                          // title on right is not part of /same as title on left 
         salary: userRole.salary,
         dept_id: deptId[0][0].id
@@ -193,15 +193,61 @@ async function addRole() {
     });
     // console.log("test", roleResponse);
     console.log(`${userRole.title} was successfully added to Roles!`)
-    console.log(roleResponse)
+    // console.log(roleResponse)
     firstQuestion();
 };
 
-// async function addEmployee() {
-//     let employeeList = 
+async function addEmployee() {
+    let employeeRoleChoices = await connection.promise().query(`SELECT * FROM e_role `)
+    console.log(employeeRoleChoices[0])
+    let userEmployeeArray = [];
+    for (let i = 0; i < employeeRoleChoices[0].length; i++) {
+        userEmployeeArray.push(employeeRoleChoices[0][i].title)
+        console.log(userEmployeeArray);
+    }
 
+    console.log(" employee array " + JSON.stringify(userEmployeeArray))
 
-// }
+    // when user selects add employee, they are prompted to enter first_name, last_name, role, and manager. 
+    //once user enters all of the above, a message appears saying it was successfully added. 
+    //user is returned to 'home screen' via firstquestion(); 
+    // when user clicks view all employees, the new employee is there
+    //the employee role id references primary key from e_role. the manager id references any other employee  
+    let newEmployee = await inquirer.prompt([
+        {
+            name: "firstName",
+            type: "input",
+            message: "Please enter the first name of the new employee"
+        },
+        {
+            name: "lastName",
+            type: "input",
+            message: "Please enter the last name of the new employee"
+
+        },
+        {
+            name: "employeeRole",
+            type: "list",
+            choices: userEmployeeArray
+
+        },
+        // {
+        //     name: "managerId",
+        //     type: "input",
+        //     message: "Please enter the id of the manager for this employee"
+        // }
+    ]);
+    const employeeRoleId = await connection.promise().query('SELECT id FROM e_role WHERE role_id = ?', newEmployee.e_role);
+    console.log(employeeRoleId[0][0].id);
+    let employeeRoleResponse = connection.query(`INSERT INTO employee SET `, {
+        role_id: employeeRoleId[0][0].id,
+        first_name: newEmployee.first_name,
+        last_name: newEmployee.last_name,
+        manager_id: newEmployee.managerId
+    })
+    console.log(employeeRoleResponse)
+
+};
 
 
 
