@@ -16,8 +16,7 @@ CREATE TABLE e_role (
     dept_id INTEGER, 
     CONSTRAINT fk_dept FOREIGN KEY (dept_id) REFERENCES department(id) 
    
-    -- REFERENCES department(id),
-    -- ON DELETE SET NULL,
+
       
 );
 
