@@ -1,12 +1,10 @@
 // dependencies 
 const cTable = require("console.table");
-// const mysql = require('mysql2');
 const inquirer = require("inquirer");
 // const mysql = require("mysql2/promise");
 // const bluebird = require("bluebird");
 const figlet = require("figlet");
 const db = require("./db/connection");
-// const util = require("util");
 const connection = require("./db/connection");
 
 
@@ -27,9 +25,6 @@ connection.connect((err) => {
         console.log("Welcome to your Employee Tracker!")
     } firstQuestion();
 });
-
-// connection.query = util.promisify(connection.query);
-
 
 // function to begin inquirer prompt questions, use async to make promise
 //try this block of code, catch any errors
