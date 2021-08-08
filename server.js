@@ -198,15 +198,15 @@ async function addRole() {
 };
 
 async function addEmployee() {
-    let employeeRoleChoices = await connection.promise().query(`SELECT * FROM e_role `)
+    let employeeRoleChoices = await connection.promise().query(`SELECT * FROM e_role`)
     // console.log(employeeRoleChoices[0])
     let userEmployeeArray = [];
     for (let i = 0; i < employeeRoleChoices[0].length; i++) {
         userEmployeeArray.push(employeeRoleChoices[0][i].title)
-        console.log(userEmployeeArray);
+        // console.log(userEmployeeArray);
     }
 
-    console.log(" employee array " + JSON.stringify(userEmployeeArray))
+    // console.log(" employee array " + JSON.stringify(userEmployeeArray))
 
     // when user selects add employee, they are prompted to enter first_name, last_name, role, and manager. 
     //once user enters all of the above, a message appears saying it was successfully added. 
@@ -226,7 +226,7 @@ async function addEmployee() {
 
         },
         {
-            name: "employeeRole",
+            name: "employee",
             type: "list",
             choices: userEmployeeArray
 
@@ -238,11 +238,12 @@ async function addEmployee() {
         // }
     ]);
     const employeeRoleId = await connection.promise().query('SELECT id FROM e_role WHERE role_id = ?', newEmployee.e_role);
-    console.log(employeeRoleId[0][0].id);
+    // console.log(employeeRoleId[0][0].id);
     connection.query(`INSERT INTO employee SET ? `, {
-        role_id: employeeRoleId[0].id,
+
         first_name: newEmployee.first_name,
         last_name: newEmployee.last_name,
+        role_id: employeeRoleId[0][0].id,
         // manager_id: newEmployee.managerId
     })
     console.log(`${newEmployee.first_name} +${newEmployee.last_name} was successfully added to Employees!`)
