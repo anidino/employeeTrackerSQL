@@ -226,11 +226,11 @@ async function addEmployee() {
             choices: roleArray
 
         },
-        // {
-        //     name: "managerId",
-        //     type: "input",
-        //     message: "Please enter the id of the manager for this employee"
-        // }
+        {
+            name: "managerId",
+            type: "input",
+            message: "Please enter the id of the manager for this employee"
+        }
     ]);
     // console.log(newEmployee);
     const employeeRoleId = await connection.promise().query('SELECT id FROM e_role WHERE title = ?', newEmployee.employee);
@@ -242,11 +242,114 @@ async function addEmployee() {
         first_name: newEmployee.firstName,
         last_name: newEmployee.lastName,
         role_id: employeeRoleId[0][0].id,
-        // manager_id: newEmployee.managerId
+        manager_id: newEmployee.managerId
     })
-    console.log(`${newEmployee.firstName} +${newEmployee.lastName} was successfully added to Employees!`)
+    console.log(`${newEmployee.firstName} + ${newEmployee.lastName} was successfully added to Employees!`)
     firstQuestion();
 
 };
+
+async function updateRole() {
+    let employeeChoices = await connection.promise().query(`SELECT * FROM employee`);
+    let employeeArray = [];
+    console.log(employeeArray)
+    let roleChoices = await connection.promise().query(`SELECT * FROM e_role`);
+    let roleArray = [];
+    for (let i = 0; i < employeeChoices[0].length; i++) {
+        employeeArray.push(employeeChoices[0][i].last_name)
+        for (let i = o; i < roleChoices[0].length; i++) {
+            roleArray.push(roleChoices[0][i].title)
+
+        }
+
+
+
+    }
+
+    let updatePrompt = await inquirer.prompt([
+
+        {
+            name: "userPick",
+            type: "list",
+            message: "Which employee would you like to update?",
+            choices: employeeArray
+
+        },
+        {
+            name: "newEmployeeRole",
+            type: "list",
+            message: "What is this employee's new role?",
+            choices: roleArray
+
+        }
+    ]);
+    await connection.promise().query(`UPDATE employee SET employee.role_id = ? WHERE employee.id = ?`, updatePrompt.newEmployeeRole);
+
+
+
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
