@@ -200,13 +200,13 @@ async function addRole() {
 async function addEmployee() {
     let employeeRoleChoices = await connection.promise().query(`SELECT * FROM e_role`)
     // console.log(employeeRoleChoices[0])
-    let userEmployeeArray = [];
+    let roleArray = [];
     for (let i = 0; i < employeeRoleChoices[0].length; i++) {
-        userEmployeeArray.push(employeeRoleChoices[0][i].title)
-        // console.log(userEmployeeArray);
+        roleArray.push(employeeRoleChoices[0][i].title)
+        // console.log(roleArray);
     }
 
-    // console.log(" employee array " + JSON.stringify(userEmployeeArray))
+    // console.log(" employee array " + JSON.stringify(roleArray))
 
     // when user selects add employee, they are prompted to enter first_name, last_name, role, and manager. 
     //once user enters all of the above, a message appears saying it was successfully added. 
@@ -228,7 +228,7 @@ async function addEmployee() {
         {
             name: "employee",
             type: "list",
-            choices: userEmployeeArray
+            choices: roleArray
 
         },
         // {
@@ -237,16 +237,19 @@ async function addEmployee() {
         //     message: "Please enter the id of the manager for this employee"
         // }
     ]);
-    const employeeRoleId = await connection.promise().query('SELECT id FROM e_role WHERE role_id = ?', newEmployee.e_role);
+    console.log(newEmployee);
+    const employeeRoleId = await connection.promise().query('SELECT id FROM e_role WHERE title = ?', newEmployee.employee);
+    // console.log("=========")
+    console.log(newEmployee.employee);
     // console.log(employeeRoleId[0][0].id);
-    connection.query(`INSERT INTO employee SET ? `, {
+    await connection.promise().query(`INSERT INTO employee SET ? `, {
 
-        first_name: newEmployee.first_name,
-        last_name: newEmployee.last_name,
+        first_name: newEmployee.firstName,
+        last_name: newEmployee.lastName,
         role_id: employeeRoleId[0][0].id,
         // manager_id: newEmployee.managerId
     })
-    console.log(`${newEmployee.first_name} +${newEmployee.last_name} was successfully added to Employees!`)
+    console.log(`${newEmployee.firstName} +${newEmployee.lastName} was successfully added to Employees!`)
     firstQuestion();
 
 };
