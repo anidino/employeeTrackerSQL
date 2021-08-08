@@ -19,7 +19,7 @@ figlet("Employee Tracker!", (err, data) => {
 
 });
 
-// WOULD LIKE TO HAVE THIS IN CONNECTION.JS BUT CODE BREAKS WHEN REMOVED EVEN WHEN FIRSTQUESTION(); IS LEFT *********************
+// would like to have this in connection.js but code breaks when removed, even when firstQuestion(); is left here. 
 connection.connect((err) => {
     if (err) {
         throw err
@@ -85,7 +85,7 @@ const firstQuestion = async () => {
 
 
 
-
+//user can view departments
 function viewDepartments() {
     db.query(`SELECT * FROM department`, (err, rows) => {
         if (err) {
@@ -151,9 +151,9 @@ async function addDepartment() {
 
 async function addRole() {
     let deptChoices = await connection.promise().query(`SELECT * FROM department`)
-    // console.log("============")
+
     // console.log(deptChoices[0]);
-    // console.log("============")
+
     let deptArray = [];
     for (let i = 0; i < deptChoices[0].length; i++) {   //deptChoices is massive parent array in console 
         deptArray.push(deptChoices[0][i].dept_name)   //previously departArray.push(deptChoices[0][i].deptName)
@@ -237,10 +237,10 @@ async function addEmployee() {
         //     message: "Please enter the id of the manager for this employee"
         // }
     ]);
-    console.log(newEmployee);
+    // console.log(newEmployee);
     const employeeRoleId = await connection.promise().query('SELECT id FROM e_role WHERE title = ?', newEmployee.employee);
     // console.log("=========")
-    console.log(newEmployee.employee);
+    // console.log(newEmployee.employee);
     // console.log(employeeRoleId[0][0].id);
     await connection.promise().query(`INSERT INTO employee SET ? `, {
 
